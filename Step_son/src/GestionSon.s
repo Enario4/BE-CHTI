@@ -1,9 +1,11 @@
 	PRESERVE8
 	THUMB   
 	export 	CallbackSon
+	export StartSon
 	import Son
 	import LongueurSon
 	export SortieSon
+	include DriverJeuLaser.inc
 ; ====================== zone de réservation de données,  ======================================
 ;Section RAM (read only) :
 	area    mesdata,data,readonly
@@ -57,6 +59,9 @@ CallbackSon proc
 	
 	
 	str r0, [r1]
+	push{r0-r3,r12,lr}
+	bl PWM_Set_Value_TIM3_Ch3
+	pop{r0-r3,r12,lr}
 	b finsi
 
 	
@@ -65,5 +70,15 @@ finsi
 	
 	pop{r4}
 	bx lr
+	endp
+
+		
+StartSon proc
+	
+	ldr r2,=index
+	ldr r1,[r2]
+	mov r1, #0
+	str r1, [r2]
+	bx lr 
 	endp
 	END	
