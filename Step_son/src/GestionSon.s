@@ -31,7 +31,7 @@ SortieSon dcd 0
 CallbackSon proc
 	; r1: son
 	; r2: index
-	
+	push{r4}
 	ldr r1,=Son
 	ldr r2,=index
 	ldr r12,=LongueurSon
@@ -47,20 +47,23 @@ CallbackSon proc
 	
 	ldr r1,=SortieSon; problème: sortie son est à 0
 	
-	push{r4}
+	
 	
 	mov r4, #719
 	
 	add r0,r0, #32768
-	asr r0,#16
 	mul r0, r4
-	pop{r4}
+	asr r0,#16
+	
+	
 	str r0, [r1]
 	b finsi
 
 	
 finsi
 	str r3, [r2]
+	
+	pop{r4}
 	bx lr
 	endp
 	END	
