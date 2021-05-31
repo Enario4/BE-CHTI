@@ -10,7 +10,7 @@
 ;Section RAM (read write):
 	area    maram,data,readwrite
 		
-index dcd 0
+
 	
 ; ===============================================================================================
 	
@@ -22,40 +22,47 @@ index dcd 0
 ; écrire le code ici		
 
 DFT_ModuleAuCarre proc 
-	;r0= pointe sur l'adresse du 1er échantillon du signal 
-	;r1 pointe sur k (fréquence normalisée)
-	push{r4,r5,r6,r7,r8,r9}
+	;r0 contient l'adresse du 1er échantillon du signal 
+	;r1 contient k (fréquence normalisée)
 	ldrsh r2, [r0] ; r2= valeur du 1er échantillon du signal format 4.12
-	ldr r1, [r1]; r8= valeur de k
 	
-	;Partie 1: calcul de la partie réelle
-	ldr r9, =index ; index
-	ldr r3, [r9]
-	mov r12, #0 ;partie réelle
-	
-	mov r7, #63
-	
+	push{r4,r5,r6,r7,r8,r9,r10, r11}
 	ldr r4, =TabCos ;r4= adresse du 1er cos
 	ldrsh r5, [r4] ;r5=valeur du 1er cos  format 1.15
-	mul r6, r2, r5 ; multiplication format 5.27
-	add r12, r12; addition
+	ldr r9, =TabSin ;r9= adresse du 1er sin
+	ldrsh r10, [r9] ;r5=valeur du 1er sin  format 1.15
+	
+	;Partie 1: calcul de la partie réelle
+	mov r3, #0 ;valeur de l'index
+	mov r12, #0; partie réélle
+	mov r11, #0; partie imaginaire
+boucle
+
+	
+	mov r7, #64
+
+	mul r6, r2, r5 ; multiplication cos format 5.27
+	add r12, r6; addition
+	mul r6, r2, r10; multiplication sinormat 5.27 
+	add r11, r6; addition
+
+	add r3, r3, #1 ;incrémenter l'index
+	mul r8, r3, r1  ;n*k
+	and r8, #63 ;modulo
+	
+	
+	ldrsh r2, [r0, r3, lsl #1] ;r2= valeur de l'échantillon suivant 
+	ldrsh r5, [r4, r8, lsl #1] ;r5= valeur du prochain cos
+	ldrsh r10, [r9, r8, lsl #1] ;r10= valeur du prochain sin
+	
 	
 	cmp r3, r7
-	bge bouclesin
-	
-	add r3, r3, #1 ;incrémenter l'index
-	mul r8, r3, r1
-	ldrsh r2, [r0, r3, lsl #2] ;r2= valeur de l'échantillon suivant 
-	ldrsh r5, [r4, r8, lsl #2] ;r4= veleur du prochain
-	
-	
-	str r3, [r9]
-	pop{r4,r5,r6,r7,r8,r9}
-	b bouclesin
-	
-bouclesin
-	
-	ldrsh r0, [r12]
+	blt boucle
+
+	smull r6,r7, r12, r12  ;format 10.54
+	smlal r6,r7, r11, r11  
+	mov r0, r7
+	pop{r4,r5,r6,r7,r8,r9,r10, r11}
 	bx lr
 	endp
 	
