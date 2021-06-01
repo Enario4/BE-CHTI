@@ -35,7 +35,7 @@ void callbackSyst(){
 			if ((compteur_score==0) && (dft[i]>= seuil)) {
 				scores[i]+=1;
 				StartSon();
-				affichage((char)i);
+				//affichage((char)i);
 			}
 				
 	}
