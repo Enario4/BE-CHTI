@@ -14,16 +14,16 @@ int seuil=2000;
 int scores[6]={0,0,0,0,0,0};
 int compteur_score=0;
 
-void affichage (int joueur) {
+/*void affichage (int joueur) {
 	
 	// Configuration affichage 
-	/*Prepare_Afficheur((char)joueur, (char)scores[joueur]);
+	Prepare_Afficheur((char)joueur, (char)scores[joueur]);
 	Prepare_Set_Point_Unite((char)joueur);
 	Prepare_Clear_Point_Unite((char)joueur);
 	Prepare_Set_LED(LED_Cible_1);
 	Prepare_Clear_LED(LED_Cible_1);
-	Mise_A_Jour_Afficheurs_LED();*/
-}
+	Mise_A_Jour_Afficheurs_LED();
+}*/
 
 void callbackSyst(){
 	compteur_score= (compteur_score+1)%20;
@@ -50,7 +50,7 @@ int main(void)
 // ============= INIT PERIPH (faites qu'une seule fois)  =====================
 // ===========================================================================
 
-// Après exécution : le coeur CPU est clocké à 72MHz ainsi que tous les timers
+// Aprï¿½s exï¿½cution : le coeur CPU est clockï¿½ ï¿½ 72MHz ainsi que tous les timers
 	
 	// Configuration DMA
 CLOCK_Configure();
